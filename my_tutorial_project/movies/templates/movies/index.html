@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Movies</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'movies/style.css' %}">
+</head>
+
+<body>
+    <div class="title">
+    <h3>Get movie rating</h3>
+    <form id="movingRatingFrm" method="get">
+        <label>movie name:</label>
+        <input type="text" id="movieNameText" name="movie_name" required maxlength="30"><br><br>
+        <input type="submit" id="getMovieRatingBtn" value="Get Rating" />
+    </form>
+    </div>
+
+    <div class="title">
+        <h3>Search common movie</h3>
+        <form id="searchCommonMoviesFrm" method="get">
+            <label>actor1 name:</label>
+            <input type="text" id="firstActorText" name="actor1" required maxlength="30"><br><br>
+            <label>actor2 name:</label>
+            <input type="text" id="secondActorText" name="actor2" required maxlength="30"><br><br>
+            <input type="submit" id="getCommonBtn" value="Search Common Movies" />
+        </form>
+    </div>
+
+    <br style="clear:both" />
+
+    <div id="rating_div" class="results" style="visibility:hidden">
+        <h4>Movie Details:</h4>
+        <label id="rating_movie_title"></label>
+        <label id="rating_value"></label><br>
+        <img id="rating_image" src="" width="300px" height="450px">
+    </div>
+
+    <div id="commonMovies_div" class="results">
+        <h4>Common movies:</h4>
+        <ul id="commonMovies_ul"></ul>
+    </div>
+
+    <script type="text/javascript">
+
+        $('#movingRatingFrm').on('submit', function(e){
+            e.preventDefault();
+
+            $('#getMovieRatingBtn').attr('disabled', true);
+            $('#rating_div').css("visibility", "hidden");
+
+            $.ajax({
+                url: "{% url 'movies:movie_rating' %}",
+                data: $(this).serialize(),
+                type: $(this).attr('method'),
+                success: function(data) {
+                    if (data != ''){
+                        $('#rating_value').text(data.rating);
+                        $('#rating_movie_title').text(data.title);
+                        $('#rating_image').attr('src',data.image_url);
+                        $('#rating_div').css("visibility", "visible");
+                    }
+                    else{
+                        alert("couldn't find a movie");
+                    }
+                },
+                error: function(data) {
+                    alert('error occurred');
+                },
+                complete:function(data) {
+                    $('#getMovieRatingBtn').attr('disabled', false);
+                }
+            });
+        });
+
+
+        $('#searchCommonMoviesFrm').on('submit', function(e){
+            e.preventDefault();
+
+            $('#getCommonBtn').attr('disabled', true);
+            $('#commonMovies_div').css("visibility", "hidden");
+
+            $.ajax({
+                url: "{% url 'movies:common_movies' %}",
+                data: $(this).serialize(),
+                type: $(this).attr('method'),
+                success: function(data) {
+                    if (data.length > 0){
+                        var commonMoviesList = $('#commonMovies_ul');
+                        commonMoviesList.empty();
+                        for(index in data) {
+                           commonMoviesList.append('<li>' + data[index] + '</li>');
+                        }
+
+                        $('#commonMovies_div').css("visibility", "visible");
+                    }
+                    else {
+                        alert("couldn't find any common movies");
+                    }
+                },
+                error: function(data) {
+                    alert('error occurred');
+                },
+                complete:function(data) {
+                    $('#getCommonBtn').attr('disabled', false);
+                }
+            });
+         });
+    </script>
+
+</body>
+
+</html>

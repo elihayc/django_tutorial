@@ -1,0 +1,19 @@
+
+div.title
+{
+    float:left;
+    width: 300px;
+    margin-right: 30px;
+}
+
+div.results
+{
+    float:left;
+    width: 300px;
+    margin-right: 30px;
+}
+
+.search_btn
+{
+    width:100%;
+}
