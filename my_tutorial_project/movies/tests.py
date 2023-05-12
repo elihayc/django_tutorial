@@ -80,3 +80,13 @@ class MovieManagerTests(TestCase):
 
         # Assert and Act
         self.assertRaises(Exception, lambda: movieManager.get_common_movies(["mel gibson", "zqzqzqzqzqzqzqzq"]))
+
+    def test_get_common_movies_series(self):
+        # Arrange
+        movieManager = MovieManager()
+
+        # Act
+        movies = movieManager.get_common_movies(["leonardo dicaprio", "brad pitt"])
+
+        # Assert
+        self.assertEqual(len(movies), 3)

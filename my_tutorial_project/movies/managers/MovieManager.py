@@ -46,7 +46,7 @@ class MovieManager:
                 intersection_ids = set.intersection(*movies_ids_sets)
 
                 if len(intersection_ids) > 0:
-                    titles = [value['title'] for value in casts_movies[0] if value['id'] in intersection_ids]
+                    titles = [value['title'] for value in casts_movies[0] if value['id'] in intersection_ids and value['role'] == ROLE_ACTOR or value['role'] == ROLE_ACTRESS]
             else:
                 raise Exception("failed on getting actor details for all actors")
         else:
